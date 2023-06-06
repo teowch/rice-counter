@@ -20,14 +20,14 @@ MIN_PIXELS = 20
 
 def binarize(img, threshold):
     """
-    Simple binarization by thresholding
+    Binarization by thresholding
     Params:
         img: input image
         threshold: threshold
             Every value < threshold will be set to 0
             Otherwise will be set to 1
     Returns:
-        Binarized version of img
+        A binarized version of img
     """
 
     rows, cols, channels = img.shape
@@ -41,6 +41,23 @@ def binarize(img, threshold):
 
 
 def flood(label, labelMatrix, y0, x0, n_pixels):
+    """
+    Flood fill algorithm to label connected components.
+    Params:
+        label: label value to assign to the connected component
+        labelMatrix: matrix representing the labels of each pixel of the image
+        y0: starting y-coordinate for flood fill
+        x0: starting x-coordinate for flood fill
+        n_pixels: current number of pixels in the connected component
+    Returns:
+        A dictionary containing information about the connected component:
+            'T': top edge of the component
+            'L': left edge of the component
+            'B': bottom edge of the component
+            'R': right edge of the component
+            'n_pixels': number of pixels in the connected component
+    """
+
     labelMatrix[y0, x0] = label
     rows, cols = labelMatrix.shape
 
@@ -50,7 +67,7 @@ def flood(label, labelMatrix, y0, x0, n_pixels):
     # Temporary storage of flood output to compare to info
     temp = {"T": y0, "L": x0, "B": y0, "R": x0, "n_pixels": 0}
 
-    # output da função flood
+    # Flood function output
     info = {
         "T": temp["T"],
         "L": temp["L"],
@@ -66,10 +83,9 @@ def flood(label, labelMatrix, y0, x0, n_pixels):
         labelMatrix[y0, x0 - 1] if (x0 - 1) >= 0 else 0,
         labelMatrix[y0 - 1, x0] if (y0 - 1) >= 0 else 0,
     ]
-    # neighbors = [n0, n1, n2, n3]
     neighborsIndex = [[y0 + 1, x0], [y0, x0 + 1], [y0, x0 - 1], [y0 - 1, x0]]
 
-    # For each neighbor
+    # For each neighbor...
     for index in range(len(neighbors)):
         # Check for image bounds
         if (
@@ -114,7 +130,6 @@ def labeling(img, min_width, min_height, min_pixels):
         min_width: Discard components with width < min_width
         min_height: Discard components with height < min_height
         min_pixels: Discard components with less than min_pixels
-
     Returns:
         A list, where each item is a dictionary with the fields:
             'label': component label
@@ -166,25 +181,29 @@ def main():
         print("Cannot open the image.\n")
         sys.exit()
 
+    # Preprocess the image
     img = img.reshape((img.shape[0], img.shape[1], 1))
     img = img.astype(np.float32) / 255
-
     img_out = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 
-    cv2.imshow("00 - original", img_out)
-
+    # Binarize the image
     if NEGATIVE:
         img = 1 - img
     img = binarize(img, THRESHOLD)
+
+    cv2.imshow("00 - original", img_out)
     cv2.imshow("01 - binarized", img)
     cv2.imwrite("01 - binarized.png", img * 255)
 
     start_time = timeit.default_timer()
+
+    # Perform labeling using flood fill algorithm
     components = labeling(img, MIN_WIDTH, MIN_HEIGHT, MIN_PIXELS)
     n_components = len(components)
     print("Time: %.2fs" % (timeit.default_timer() - start_time))
     print("%d components detected." % n_components)
 
+    # Draw rectangles around the labeled components
     for c in components:
         cv2.rectangle(img_out, (c["L"], c["T"]), (c["R"], c["B"]), (0, 0, 1))
 
