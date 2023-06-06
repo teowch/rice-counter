@@ -178,7 +178,7 @@ def labeling(img, min_width, min_height, min_pixels):
 def main():
     img = cv2.imread(INPUT_IMAGE, cv2.IMREAD_GRAYSCALE)
     if img is None:
-        print("Cannot open the image.\n")
+        print("Cannot open the image.")
         sys.exit()
 
     # Preprocess the image
