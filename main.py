@@ -85,7 +85,7 @@ def flood(label, labelMatrix, y0, x0, n_pixels):
     ]
     neighborsIndex = [[y0 + 1, x0], [y0, x0 + 1], [y0, x0 - 1], [y0 - 1, x0]]
 
-    # For each neighbor...
+    # For each neighbor
     for index in range(len(neighbors)):
         # Check for image bounds
         if (
@@ -151,7 +151,7 @@ def labeling(img, min_width, min_height, min_pixels):
     sys.setrecursionlimit(5000)
     label = 1
 
-    # For each pixel...
+    # For each pixel
     for row in range(rows):
         for col in range(cols):
             if labelMatrix[row, col] == -1:
