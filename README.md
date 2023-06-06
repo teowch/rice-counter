@@ -1,3 +1,1 @@
 # Segmentation Rice Counter
-
----
