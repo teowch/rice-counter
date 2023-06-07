@@ -65,15 +65,21 @@ def flood(label, labelMatrix, y0, x0, n_pixels):
     n = 0
 
     # Temporary storage of flood output to compare to info
-    temp = {"T": y0, "L": x0, "B": y0, "R": x0, "n_pixels": 0}
+    temp = {
+        'T': y0,
+        'L': x0,
+        'B': y0,
+        'R': x0,
+        'n_pixels': 0
+    }
 
     # Flood function output
     info = {
-        "T": temp["T"],
-        "L": temp["L"],
-        "B": temp["B"],
-        "R": temp["R"],
-        "n_pixels": n_pixels + n,
+        'T': temp['T'],
+        'L': temp['L'],
+        'B': temp['B'],
+        'R': temp['R'],
+        'n_pixels': n_pixels + n,
     }
 
     # Neighbors array to iterate, taking care to image bounds
@@ -102,7 +108,7 @@ def flood(label, labelMatrix, y0, x0, n_pixels):
                     labelMatrix,
                     neighborsIndex[index][0],
                     neighborsIndex[index][1],
-                    n_pixels,
+                    n_pixels
                 )
         # Verify if the bounds have increased
         if temp["T"] < info["T"]:
@@ -127,9 +133,9 @@ def labeling(img, min_width, min_height, min_pixels):
     Labeling using Flood Fill.
     Params:
         img: input image
-        min_width: Discard components with width < min_width
-        min_height: Discard components with height < min_height
-        min_pixels: Discard components with less than min_pixels
+        min_width: discard components with width < min_width
+        min_height: discard components with height < min_height
+        min_pixels: discard components with less than min_pixels
     Returns:
         A list, where each item is a dictionary with the fields:
             'label': component label
